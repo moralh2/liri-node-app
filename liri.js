@@ -71,7 +71,7 @@ function findMovie(movieName) {
         var plot = response.data.Plot
         var actors = response.data.Actors
 
-        console.log(printStyleHeader("Movie Info:"))
+        console.log(printGreen("Movie Info:"))
         var ratings = response.data.Ratings
 
         var logPrint = 
@@ -101,17 +101,26 @@ function findMovie(movieName) {
 }
 
 function printCategory(key, value) {
-    return printStyleKey(key + ":") + printStyleValue(" " + value) + "\n"
+    return printRed(key + ":") + printYellow(" " + value) + "\n"
 }
 
 function printSubCategory(key, value) {
-    return printStyleSubKey("   " + key + ": ") + printStyleValue(" " + value) + "\n" 
+    return printBlue("   " + key + ": ") + printYellow(" " + value) + "\n" 
 }
 
 const printStyleHeader = chalk.green.bold.italic
-const printStyleKey = chalk.underline.red
-const printStyleSubKey = chalk.blue.italic
-const printStyleValue = chalk.yellow
+// const printStyleKey = chalk.underline.red
+// const printStyleSubKey = chalk.blue.italic
+
+// const printStyleValue = chalk.yellow
+// const printStyleKey = chalk.underline.red
+// const printStyleSubKey = chalk.blue.italic
+
+const printGreen = chalk.green.bold.italic
+const printBlue = chalk.blue.italic
+const printRed = chalk.underline.red
+const printYellow = chalk.yellow
+
 
 
 
