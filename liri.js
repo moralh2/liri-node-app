@@ -5,7 +5,12 @@ var Spotify = require('node-spotify-api')
 var axios = require("axios")
 var moment = require('moment')
 var fs = require("fs");
+
 const chalk = require('chalk');
+const printGreen = chalk.green.bold.italic
+const printBlue = chalk.blue.italic
+const printRed = chalk.underline.red
+const printYellow = chalk.yellow
 
 var inputs = process.argv
 var command = inputs[2]
@@ -13,15 +18,12 @@ var inputForFunction = inputs[3]
 
 switch (command) {
     case 'spotify-this-song':
-        inputForFunction = inputForFunction || 'The Sign Ace Base'
         findTrack(inputForFunction)
         break;
     case 'movie-this':
-        inputForFunction = inputForFunction || "Mr. Nobody"
         findMovie(inputForFunction)
         break;
     case 'concert-this':
-        inputForFunction = inputForFunction || "Muse"
         findVenue(inputForFunction)
         break;
     case 'do-what-it-says':
@@ -32,6 +34,7 @@ switch (command) {
 }
 
 function findTrack(input_song) {
+    input_song = input_song || 'The Sign Ace Base'
     var spotify = new Spotify(keys.spotify)
     spotify.search({ type: 'track', query: input_song }, function (err, data) {
         if (err) {
@@ -58,6 +61,7 @@ function findTrack(input_song) {
 }
 
 function findMovie(movieName) {
+    movieName = movieName || "Mr. Nobody"
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
     axios.get(queryUrl).then(function (response) {
         var title = response.data.Title
@@ -82,23 +86,8 @@ function findMovie(movieName) {
     })
 }
 
-function printCategory(key, value) {
-    return printRed(key + ":") + printYellow(" " + value) + "\n"
-}
-
-function printSubCategory(key, value) {
-    return printBlue("   " + key + ": ") + printYellow(" " + value) + "\n" 
-}
-
-const printGreen = chalk.green.bold.italic
-const printBlue = chalk.blue.italic
-const printRed = chalk.underline.red
-const printYellow = chalk.yellow
-
-
-
-
 function findVenue(artists) {
+    artists = artists || "Muse"
     var queryUrl = "https://rest.bandsintown.com/artists/" + artists + "/events?app_id=codingbootcamp"
     axios.get(queryUrl).then(function (response) {
         all_events = response.data
@@ -130,7 +119,6 @@ function readFromFile() {
 
         switch (command) {
             case 'spotify-this-song':
-            console.log("AAAAA")
                 findTrack(inputForFunction)
                 break;
             case 'movie-this':
@@ -142,20 +130,13 @@ function readFromFile() {
             default:
                 console.log('ruh roh')
         }
-
     })
-    // console.log(file_inputs)
-
-    // var command = file_inputs[0]
-    // var inputForFunction = file_inputs[1]
-    // console.log(command)
-
-    
 }
 
+function printCategory(key, value) {
+    return printRed(key + ":") + printYellow(" " + value) + "\n"
+}
 
-
-// concert-this <artist/band name here>
-// spotify-this-song
-// movie-this
-// do-what-it-says
+function printSubCategory(key, value) {
+    return printBlue("   " + key + ": ") + printYellow(" " + value) + "\n" 
+}
