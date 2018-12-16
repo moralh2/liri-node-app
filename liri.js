@@ -1,6 +1,7 @@
 require("dotenv").config();
 var keys = require("./keys.js")
 var Spotify = require('node-spotify-api');
+var axios = require("axios");
 
 var inputs = process.argv
 var command = inputs[2]
@@ -9,9 +10,9 @@ switch(command) {
     case 'spotify-this-song':
       findTrack()
       break;
-    // case y:
-    //   code block
-    //   break;
+    case 'movie-this':
+      findMovie()
+      break;
     // default:
     //   code block
   }
@@ -39,6 +40,34 @@ function findTrack() {
             "URL: " + url
         )
     });
+}
+
+function findMovie() {
+    var movieName = inputs[3]
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
+    axios.get(queryUrl).then(function(response) {
+        var title = response.data.Title
+        var year = response.data.Year
+        var ratings = response.data.Ratings
+        var imdb = ratings[0].Source + " Rating: " + ratings[0].Value
+        var rts = ratings[1].Source + " Rating: " + ratings[1].Value
+        var country = response.data.Country
+        var language = response.data.Language
+        var plot = response.data.Plot
+        var actors = response.data.Actors
+        console.log(
+            "Title: " + title + "\n" + 
+            "Year: " + year + "\n" +
+            "Ratings: " + "\n" + 
+            "   " + imdb + "\n" + 
+            "   " + rts + "\n" + 
+            "Country or Countries: " + country + "\n" + 
+            "Language(s): " + language + "\n" + 
+            "Plot: " + plot + "\n" + 
+            "Actors: " + actors + "\n"
+        )
+
+    })
 }
 
 
