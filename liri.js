@@ -4,27 +4,32 @@ var keys = require("./keys.js")
 var Spotify = require('node-spotify-api')
 var axios = require("axios")
 var moment = require('moment')
+var fs = require("fs");
 
 var inputs = process.argv
 var command = inputs[2]
+var inputForFunction = inputs[3]
 
 switch (command) {
     case 'spotify-this-song':
-        findTrack()
+        findTrack(inputForFunction)
         break;
     case 'movie-this':
-        findMovie()
+        findMovie(inputForFunction)
         break;
     case 'concert-this':
-        findVenue()
+        findVenue(inputForFunction)
+        break;
+    case 'do-what-it-says':
+        readFromFile()
         break;
     default:
         console.log('ruh roh')
 }
 
-function findTrack() {
+function findTrack(input_song) {
     var spotify = new Spotify(keys.spotify)
-    var input_song = inputs[3]
+    // var input_song = inputs[3]
     spotify.search({ type: 'track', query: input_song }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
@@ -49,8 +54,8 @@ function findTrack() {
     });
 }
 
-function findMovie() {
-    var movieName = inputs[3]
+function findMovie(movieName) {
+    // var movieName = inputs[3]
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
     axios.get(queryUrl).then(function (response) {
         // console.log(response.data)
@@ -76,11 +81,14 @@ function findMovie() {
             "Plot: " + plot + "\n" +
             "Actors: " + actors + "\n"
         )
+        console.log(response.data) 
+        var jsonPretty = JSON.stringify(response.data,null,4)
+        console.log(jsonPretty)
     })
 }
 
-function findVenue() {
-    var artists = inputs[3]
+function findVenue(artists) {
+    // var artists = inputs[3]
     var queryUrl = "https://rest.bandsintown.com/artists/" + artists + "/events?app_id=codingbootcamp"
     axios.get(queryUrl).then(function (response) {
         all_events = response.data
@@ -102,8 +110,39 @@ function findVenue() {
     })
 }
 
+function readFromFile() {
+    fs.readFile("random.txt", "utf8", function(err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        var file_inputs = data.split(",");
+        var command = file_inputs[0]
+        var inputForFunction = file_inputs[1]
 
+        switch (command) {
+            case 'spotify-this-song':
+            console.log("AAAAA")
+                findTrack(inputForFunction)
+                break;
+            case 'movie-this':
+                findMovie(inputForFunction)
+                break;
+            case 'concert-this':
+                findVenue(inputForFunction)
+                break;
+            default:
+                console.log('ruh roh')
+        }
 
+    })
+    // console.log(file_inputs)
+
+    // var command = file_inputs[0]
+    // var inputForFunction = file_inputs[1]
+    // console.log(command)
+
+    
+}
 
 
 // concert-this <artist/band name here>
