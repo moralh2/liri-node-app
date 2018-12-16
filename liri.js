@@ -6,8 +6,6 @@ var axios = require("axios")
 var moment = require('moment')
 var fs = require("fs");
 const chalk = require('chalk');
-const printStyleKey = chalk.bgBlue.black
-const printStyleValue = chalk.yellow.underline.bold
 
 var inputs = process.argv
 var command = inputs[2]
@@ -15,9 +13,11 @@ var inputForFunction = inputs[3]
 
 switch (command) {
     case 'spotify-this-song':
+        inputForFunction = inputForFunction || 'The Sign Ace Base'
         findTrack(inputForFunction)
         break;
     case 'movie-this':
+        inputForFunction = inputForFunction || "Mr. Nobody,"
         findMovie(inputForFunction)
         break;
     case 'concert-this':
@@ -64,39 +64,56 @@ function findMovie(movieName) {
                 var title = response.data.Title
         var year = response.data.Year
         var ratings = response.data.Ratings
-        var imdb = ratings[0].Source + " Rating: " + ratings[0].Value
-        var rts = ratings[1].Source + " Rating: " + ratings[1].Value
+        var imdb = printStyleSubKey(ratings[0].Source) + ": " + printStyleValue(ratings[0].Value)
+        var rts = printStyleSubKey(ratings[1].Source) + ": " + printStyleValue(ratings[1].Value)
         var country = response.data.Country
         var language = response.data.Language
         var plot = response.data.Plot
         var actors = response.data.Actors
 
-        console.log(chalk.yellow('Hello world!'));
+        console.log(printStyleHeader("Movie Info:"))
+        var ratings = response.data.Ratings
 
-        console.log(printStyleKey("Hola Hola"))
-        console.log(printStyleValue("Hola Hola"))
-
-        console.log("---")
-        console.log("Movie Info:")
         var logPrint = 
-            printStyleKey("Title: ") + printStyleValue(title) + "\n" +
-            printStyleKey("Year: ") + printStyleValue(year) + "\n" +
-            printStyleKey("Ratings: ") + "\n" +
-            "   " + printStyleValue(imdb) + "\n" +
-            "   " + printStyleValue(rts) + "\n" +
-            printStyleKey("Country or Countries: ") + printStyleValue(country) + "\n" +
-            printStyleKey("Language(s): ") + printStyleValue(language) + "\n" +
-            printStyleKey("Plot: ") + printStyleValue(plot) + "\n" +
-            printStyleKey("Actors: ") + printStyleValue(actors) + "\n"
-        console.log(logPrint)
-        
+            printCategory('Title', title) +
+            printCategory('Year', title) + 
+            printCategory('Ratings') +
+            printSubCategory(ratings[0].Source, ratings[0].Value) +
+            printSubCategory(ratings[1].Source, ratings[1].Value) +
+            printCategory('Country', country) +
+            printCategory('Language:', language) +
+            printCategory('Plot', plot) +
+            printCategory('Actors', actors)
 
-        // console.log(movieObj)
-        // console.log(response.data) 
-        // var jsonPretty = JSON.stringify(movieObj,null,4)
-        // console.log(jsonPretty)
+
+            // printStyleKey("Title:") + printStyleValue(" " + title) + "\n" +
+            // printStyleKey("Year:") + printStyleValue(" " + year) + "\n" +
+            // printStyleKey("Ratings:") + "\n" +
+            // "   " + imdb + "\n" +
+            // "   " + rts + "\n" +
+            // printStyleKey("Country or Countries:") + printStyleValue(" " + country) + "\n" +
+            // printStyleKey("Language(s):") + printStyleValue(" " + language) + "\n" +
+            // printStyleKey("Plot:") + printStyleValue(" " + plot) + "\n" +
+            // printStyleKey("Actors:") + printStyleValue(" " + actors) + "\n"
+        console.log(logPrint)
+
     })
 }
+
+function printCategory(key, value) {
+    return printStyleKey(key + ":") + printStyleValue(" " + value) + "\n"
+}
+
+function printSubCategory(key, value) {
+    return printStyleSubKey("   " + key + ": ") + printStyleValue(" " + value) + "\n" 
+}
+
+const printStyleHeader = chalk.green.bold.italic
+const printStyleKey = chalk.underline.red
+const printStyleSubKey = chalk.blue.italic
+const printStyleValue = chalk.yellow
+
+
 
 function findVenue(artists) {
     // var artists = inputs[3]
@@ -154,6 +171,7 @@ function readFromFile() {
 
     
 }
+
 
 
 // concert-this <artist/band name here>
