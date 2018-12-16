@@ -5,6 +5,9 @@ var Spotify = require('node-spotify-api')
 var axios = require("axios")
 var moment = require('moment')
 var fs = require("fs");
+const chalk = require('chalk');
+const printStyleKey = chalk.bgBlue.black
+const printStyleValue = chalk.yellow.underline.bold
 
 var inputs = process.argv
 var command = inputs[2]
@@ -58,6 +61,20 @@ function findMovie(movieName) {
     // var movieName = inputs[3]
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
     axios.get(queryUrl).then(function (response) {
+        // var movieObj = {}
+        // movieObj["Title"] = response.data.Title
+        // movieObj["Year"] = response.data.Year
+        // var ratings = response.data.Ratings
+        // movieObj["Ratings"] = {}
+        // movieObj["Ratings"][ratings[0].Source] = ratings[0].Value
+        // movieObj["Ratings"][ratings[1].Source] = ratings[1].Value
+        // movieObj["Country"] = response.data.Country
+        // movieObj["Language"] = response.data.Language
+        // movieObj["Plot"] = response.data.Plot
+        // movieObj["Actors"] = response.data.Actors
+
+
+
         // console.log(response.data)
         var title = response.data.Title
         var year = response.data.Year
@@ -68,10 +85,16 @@ function findMovie(movieName) {
         var language = response.data.Language
         var plot = response.data.Plot
         var actors = response.data.Actors
+        console.log(chalk.yellow('Hello world!'));
+
+        console.log(printStyleKey("Hola Hola"))
+        console.log(printStyleValue("Hola Hola"))
+
         console.log("---")
         console.log("Movie Info:")
-        console.log(
-            "Title: " + title + "\n" +
+        console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
+        var logPrint = 
+            "%c Title: " + title + "\n" +
             "Year: " + year + "\n" +
             "Ratings: " + "\n" +
             "   " + imdb + "\n" +
@@ -80,10 +103,13 @@ function findMovie(movieName) {
             "Language(s): " + language + "\n" +
             "Plot: " + plot + "\n" +
             "Actors: " + actors + "\n"
-        )
-        console.log(response.data) 
-        var jsonPretty = JSON.stringify(response.data,null,4)
-        console.log(jsonPretty)
+        console.log(logPrint, 'background: #222; color: #bada55')
+        
+
+        // console.log(movieObj)
+        // console.log(response.data) 
+        // var jsonPretty = JSON.stringify(movieObj,null,4)
+        // console.log(jsonPretty)
     })
 }
 
