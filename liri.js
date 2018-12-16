@@ -61,22 +61,7 @@ function findMovie(movieName) {
     // var movieName = inputs[3]
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
     axios.get(queryUrl).then(function (response) {
-        // var movieObj = {}
-        // movieObj["Title"] = response.data.Title
-        // movieObj["Year"] = response.data.Year
-        // var ratings = response.data.Ratings
-        // movieObj["Ratings"] = {}
-        // movieObj["Ratings"][ratings[0].Source] = ratings[0].Value
-        // movieObj["Ratings"][ratings[1].Source] = ratings[1].Value
-        // movieObj["Country"] = response.data.Country
-        // movieObj["Language"] = response.data.Language
-        // movieObj["Plot"] = response.data.Plot
-        // movieObj["Actors"] = response.data.Actors
-
-
-
-        // console.log(response.data)
-        var title = response.data.Title
+                var title = response.data.Title
         var year = response.data.Year
         var ratings = response.data.Ratings
         var imdb = ratings[0].Source + " Rating: " + ratings[0].Value
@@ -85,6 +70,7 @@ function findMovie(movieName) {
         var language = response.data.Language
         var plot = response.data.Plot
         var actors = response.data.Actors
+
         console.log(chalk.yellow('Hello world!'));
 
         console.log(printStyleKey("Hola Hola"))
@@ -92,18 +78,17 @@ function findMovie(movieName) {
 
         console.log("---")
         console.log("Movie Info:")
-        console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
         var logPrint = 
-            "%c Title: " + title + "\n" +
-            "Year: " + year + "\n" +
-            "Ratings: " + "\n" +
-            "   " + imdb + "\n" +
-            "   " + rts + "\n" +
-            "Country or Countries: " + country + "\n" +
-            "Language(s): " + language + "\n" +
-            "Plot: " + plot + "\n" +
-            "Actors: " + actors + "\n"
-        console.log(logPrint, 'background: #222; color: #bada55')
+            printStyleKey("Title: ") + printStyleValue(title) + "\n" +
+            printStyleKey("Year: ") + printStyleValue(year) + "\n" +
+            printStyleKey("Ratings: ") + "\n" +
+            "   " + printStyleValue(imdb) + "\n" +
+            "   " + printStyleValue(rts) + "\n" +
+            printStyleKey("Country or Countries: ") + printStyleValue(country) + "\n" +
+            printStyleKey("Language(s): ") + printStyleValue(language) + "\n" +
+            printStyleKey("Plot: ") + printStyleValue(plot) + "\n" +
+            printStyleKey("Actors: ") + printStyleValue(actors) + "\n"
+        console.log(logPrint)
         
 
         // console.log(movieObj)
