@@ -1,9 +1,9 @@
 require("dotenv").config();
 var keys = require("./keys.js")
+
 var Spotify = require('node-spotify-api')
 var axios = require("axios")
 var moment = require('moment')
-
 
 var inputs = process.argv
 var command = inputs[2]
@@ -38,6 +38,8 @@ function findTrack() {
         // Some songs don't have preview, like All The Small Things
         // will output album URL in that case
         var url = preview_url || album_url
+        console.log("---")
+        console.log("Song Info:")
         console.log(
             "Artist: " + artist + "\n" +
             "Album: " + album + "\n" +
@@ -51,6 +53,7 @@ function findMovie() {
     var movieName = inputs[3]
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
     axios.get(queryUrl).then(function (response) {
+        // console.log(response.data)
         var title = response.data.Title
         var year = response.data.Year
         var ratings = response.data.Ratings
@@ -60,6 +63,8 @@ function findMovie() {
         var language = response.data.Language
         var plot = response.data.Plot
         var actors = response.data.Actors
+        console.log("---")
+        console.log("Movie Info:")
         console.log(
             "Title: " + title + "\n" +
             "Year: " + year + "\n" +
@@ -79,13 +84,16 @@ function findVenue() {
     var queryUrl = "https://rest.bandsintown.com/artists/" + artists + "/events?app_id=codingbootcamp"
     axios.get(queryUrl).then(function (response) {
         all_events = response.data
+        console.log("---")
+        console.log("Events:")
         for (i = 0; i < all_events.length; i++) {
             var venue = all_events[i].venue.name + " "
-            var location = "(" + all_events[i].venue.city + ", " + all_events[i].venue.country + ")"
-            var date = moment(all_events.datetime).format() 
-            // var lineup = all_events.lineup.join()
+            var location = all_events[i].venue.city + ", " + all_events[i].venue.country
+            var date = moment(all_events[i].datetime).format("dddd, MMMM Do YYYY, h:mm A")
+            var lineup = all_events[i].lineup.join(', ')
             console.log(
-                // "Lineup: " + lineup + "\n" +
+                "---" + "\n" +
+                "Lineup: " + lineup + "\n" +
                 "Date: " + date + "\n" +
                 "Venue: " + venue + "\n" +
                 "Location: " + location 
