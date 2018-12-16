@@ -32,7 +32,6 @@ switch (command) {
 
 function findTrack(input_song) {
     var spotify = new Spotify(keys.spotify)
-    // var input_song = inputs[3]
     spotify.search({ type: 'track', query: input_song }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
@@ -46,14 +45,14 @@ function findTrack(input_song) {
         // Some songs don't have preview, like All The Small Things
         // will output album URL in that case
         var url = preview_url || album_url
-        console.log("---")
-        console.log("Song Info:")
-        console.log(
-            "Artist: " + artist + "\n" +
-            "Album: " + album + "\n" +
-            "Song: " + song + " " + track_info + "\n" +
-            "URL: " + url
-        )
+        console.log(printGreen("Song Info:"))
+        var logPrint = 
+            printCategory('Artist', artist) +
+            printCategory('Album', album) + 
+            printCategory('Song', song) +
+            printSubCategory("Track", track_info) +
+            printCategory('URL', url)
+        console.log(logPrint)
     });
 }
 
