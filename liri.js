@@ -58,25 +58,19 @@ function findTrack(input_song) {
 }
 
 function findMovie(movieName) {
-    // var movieName = inputs[3]
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&apikey=" + keys.omdb.key
     axios.get(queryUrl).then(function (response) {
-                var title = response.data.Title
+        var title = response.data.Title
         var year = response.data.Year
         var ratings = response.data.Ratings
-        var imdb = printStyleSubKey(ratings[0].Source) + ": " + printStyleValue(ratings[0].Value)
-        var rts = printStyleSubKey(ratings[1].Source) + ": " + printStyleValue(ratings[1].Value)
         var country = response.data.Country
         var language = response.data.Language
         var plot = response.data.Plot
         var actors = response.data.Actors
-
         console.log(printGreen("Movie Info:"))
-        var ratings = response.data.Ratings
-
         var logPrint = 
             printCategory('Title', title) +
-            printCategory('Year', title) + 
+            printCategory('Year', year) + 
             printCategory('Ratings') +
             printSubCategory(ratings[0].Source, ratings[0].Value) +
             printSubCategory(ratings[1].Source, ratings[1].Value) +
@@ -84,19 +78,7 @@ function findMovie(movieName) {
             printCategory('Language:', language) +
             printCategory('Plot', plot) +
             printCategory('Actors', actors)
-
-
-            // printStyleKey("Title:") + printStyleValue(" " + title) + "\n" +
-            // printStyleKey("Year:") + printStyleValue(" " + year) + "\n" +
-            // printStyleKey("Ratings:") + "\n" +
-            // "   " + imdb + "\n" +
-            // "   " + rts + "\n" +
-            // printStyleKey("Country or Countries:") + printStyleValue(" " + country) + "\n" +
-            // printStyleKey("Language(s):") + printStyleValue(" " + language) + "\n" +
-            // printStyleKey("Plot:") + printStyleValue(" " + plot) + "\n" +
-            // printStyleKey("Actors:") + printStyleValue(" " + actors) + "\n"
         console.log(logPrint)
-
     })
 }
 
@@ -107,14 +89,6 @@ function printCategory(key, value) {
 function printSubCategory(key, value) {
     return printBlue("   " + key + ": ") + printYellow(" " + value) + "\n" 
 }
-
-const printStyleHeader = chalk.green.bold.italic
-// const printStyleKey = chalk.underline.red
-// const printStyleSubKey = chalk.blue.italic
-
-// const printStyleValue = chalk.yellow
-// const printStyleKey = chalk.underline.red
-// const printStyleSubKey = chalk.blue.italic
 
 const printGreen = chalk.green.bold.italic
 const printBlue = chalk.blue.italic
