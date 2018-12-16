@@ -17,10 +17,11 @@ switch (command) {
         findTrack(inputForFunction)
         break;
     case 'movie-this':
-        inputForFunction = inputForFunction || "Mr. Nobody,"
+        inputForFunction = inputForFunction || "Mr. Nobody"
         findMovie(inputForFunction)
         break;
     case 'concert-this':
+        inputForFunction = inputForFunction || "Muse"
         findVenue(inputForFunction)
         break;
     case 'do-what-it-says':
@@ -98,24 +99,22 @@ const printYellow = chalk.yellow
 
 
 function findVenue(artists) {
-    // var artists = inputs[3]
     var queryUrl = "https://rest.bandsintown.com/artists/" + artists + "/events?app_id=codingbootcamp"
     axios.get(queryUrl).then(function (response) {
         all_events = response.data
-        console.log("---")
-        console.log("Events:")
+        console.log(printGreen("Events:"))
         for (i = 0; i < all_events.length; i++) {
             var venue = all_events[i].venue.name + " "
             var location = all_events[i].venue.city + ", " + all_events[i].venue.country
             var date = moment(all_events[i].datetime).format("dddd, MMMM Do YYYY, h:mm A")
             var lineup = all_events[i].lineup.join(', ')
-            console.log(
-                "---" + "\n" +
-                "Lineup: " + lineup + "\n" +
-                "Date: " + date + "\n" +
-                "Venue: " + venue + "\n" +
-                "Location: " + location 
-            )
+            var logPrint = 
+                printCategory('Lineup', lineup) +
+                printCategory('Date', date) + 
+                printCategory('Venue', venue) +
+                printCategory('Location:', location)
+            console.log(printBlue("Event:"))
+            console.log(logPrint)
         }
     })
 }
