@@ -16,21 +16,28 @@ var inputs = process.argv
 var command = inputs[2]
 var inputForFunction = inputs[3]
 
-switch (command) {
-    case 'spotify-this-song':
-        findTrack(inputForFunction)
-        break;
-    case 'movie-this':
-        findMovie(inputForFunction)
-        break;
-    case 'concert-this':
-        findVenue(inputForFunction)
-        break;
-    case 'do-what-it-says':
-        readFromFile()
-        break;
-    default:
-        console.log('ruh roh')
+runACommand(command, inputForFunction)
+
+function runACommand(command, input) {
+    switch (command) {
+        case 'spotify-this-song':
+            findTrack(input)
+            break;
+        case 'movie-this':
+            findMovie(input)
+            break;
+        case 'concert-this':
+            findVenue(input)
+            break;
+        case 'do-what-it-says':
+            // readFromFile()
+            var data = readFile('random.txt')
+            var file_inputs = data.split(",");
+            runACommand(file_inputs[0], file_inputs[1])
+            // break;
+        default:
+            console.log('ruh roh')
+    }
 }
 
 function findTrack(input_song) {
@@ -92,7 +99,7 @@ function findVenue(artists) {
     axios.get(queryUrl).then(function (response) {
         all_events = response.data
         console.log(printGreen("Events:"))
-        for (i = 0; i < all_events.length; i++) {
+        for (var i = 0; i < all_events.length; i++) {
             var venue = all_events[i].venue.name + " "
             var location = all_events[i].venue.city + ", " + all_events[i].venue.country
             var date = moment(all_events[i].datetime).format("dddd, MMMM Do YYYY, h:mm A")
@@ -109,28 +116,57 @@ function findVenue(artists) {
 }
 
 function readFromFile() {
-    fs.readFile("random.txt", "utf8", function(err, data) {
-        if (err) {
-            return console.log(err);
-        }
-        var file_inputs = data.split(",");
-        var command = file_inputs[0]
-        var inputForFunction = file_inputs[1]
+    var data = readFile('random.txt')
+    var file_inputs = data.split(",");
 
-        switch (command) {
-            case 'spotify-this-song':
-                findTrack(inputForFunction)
-                break;
-            case 'movie-this':
-                findMovie(inputForFunction)
-                break;
-            case 'concert-this':
-                findVenue(inputForFunction)
-                break;
-            default:
-                console.log('ruh roh')
-        }
-    })
+    var command = file_inputs[0]
+    var inputForFunction = file_inputs[1]
+
+    console.log(command)
+    console.log(inputForFunction)
+
+
+    runACommand(command, inputForFunction)
+
+
+
+    // var command
+    // var inputForFunction
+    // var data
+    // try {  
+    //     data = fs.readFileSync('random.txt', 'utf8');
+    //     console.log(data);    
+    // } catch(e) {
+    //     console.log('Error:', e.stack);
+    // }
+
+    // var file_inputs = data.split(",");
+    // command = file_inputs[0]
+    // inputForFunction = file_inputs[1]
+
+    // runACommand(command, inputForFunction)
+
+
+    // fs.readFile("random.txt", "utf8", function(err, data) {
+        // if (err) {
+            // return console.log(err);
+        // }
+        // console.log(data)
+    //     var file_inputs = data.split(",");
+    //     command = file_inputs[0]
+    //     inputForFunction = file_inputs[1]
+    // })
+
+
+}
+
+function readFile(file) {
+    try {  
+        data = fs.readFileSync(file, 'utf8');
+        return data 
+    } catch(e) {
+        console.log('Error:', e.stack);
+    }
 }
 
 function printCategory(key, value) {
