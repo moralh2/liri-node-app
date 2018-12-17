@@ -1,16 +1,14 @@
 require("dotenv").config();
 var keys = require("./keys.js")
+var findTrack = require("./track.js")
+var chalk = require("./chalk.js")
 
-var Spotify = require('node-spotify-api')
+// var Spotify = require('node-spotify-api')
+
 var axios = require("axios")
 var moment = require('moment')
 var fs = require("fs");
 
-const chalk = require('chalk');
-const printGreen = chalk.green.bold.italic
-const printBlue = chalk.blue.italic
-const printRed = chalk.underline.red
-const printYellow = chalk.yellow
 
 var inputs = process.argv
 var command = inputs[2]
@@ -30,42 +28,39 @@ function runACommand(command, input) {
             findVenue(input)
             break;
         case 'do-what-it-says':
-            // readFromFile()
-            var data = readFile('random.txt')
-            var file_inputs = data.split(",");
-            runACommand(file_inputs[0], file_inputs[1])
-            // break;
+            readFromFile()
+            break;
         default:
             console.log('ruh roh')
     }
 }
 
-function findTrack(input_song) {
-    input_song = input_song || 'The Sign Ace Base'
-    var spotify = new Spotify(keys.spotify)
-    spotify.search({ type: 'track', query: input_song }, function (err, data) {
-        if (err) {
-            return console.log('Error occurred: ' + err);
-        }
-        var artist = data.tracks.items[0].artists[0].name
-        var song = data.tracks.items[0].name
-        var track_info = "(Track " + data.tracks.items[0].track_number + " of " + data.tracks.items[0].album.total_tracks + ")"
-        var album = data.tracks.items[0].album.name + " (Released: " + data.tracks.items[0].album.release_date + ")"
-        var preview_url = data.tracks.items[0].preview_url
-        var album_url = data.tracks.items[0].album.external_urls.spotify
-        // Some songs don't have preview, like All The Small Things
-        // will output album URL in that case
-        var url = preview_url || album_url
-        console.log(printGreen("Song Info:"))
-        var logPrint = 
-            printCategory('Artist', artist) +
-            printCategory('Album', album) + 
-            printCategory('Song', song) +
-            printSubCategory("Track", track_info) +
-            printCategory('URL', url)
-        console.log(logPrint)
-    });
-}
+// function findTrack(input_song) {
+//     input_song = input_song || 'The Sign Ace Base'
+//     var spotify = new Spotify(keys.spotify)
+//     spotify.search({ type: 'track', query: input_song }, function (err, data) {
+//         if (err) {
+//             return console.log('Error occurred: ' + err);
+//         }
+//         var artist = data.tracks.items[0].artists[0].name
+//         var song = data.tracks.items[0].name
+//         var track_info = "(Track " + data.tracks.items[0].track_number + " of " + data.tracks.items[0].album.total_tracks + ")"
+//         var album = data.tracks.items[0].album.name + " (Released: " + data.tracks.items[0].album.release_date + ")"
+//         var preview_url = data.tracks.items[0].preview_url
+//         var album_url = data.tracks.items[0].album.external_urls.spotify
+//         // Some songs don't have preview, like All The Small Things
+//         // will output album URL in that case
+//         var url = preview_url || album_url
+//         console.log(chalk.printGreen("Song Info:"))
+//         var logPrint = 
+//             printCategory('Artist', artist) +
+//             printCategory('Album', album) + 
+//             printCategory('Song', song) +
+//             printSubCategory("Track", track_info) +
+//             printCategory('URL', url)
+//         console.log(logPrint)
+//     });
+// }
 
 function findMovie(movieName) {
     movieName = movieName || "Mr. Nobody"
@@ -78,7 +73,7 @@ function findMovie(movieName) {
         var language = response.data.Language
         var plot = response.data.Plot
         var actors = response.data.Actors
-        console.log(printGreen("Movie Info:"))
+        console.log(chalk.printGreen("Movie Info:"))
         var logPrint = 
             printCategory('Title', title) +
             printCategory('Year', year) + 
@@ -98,7 +93,7 @@ function findVenue(artists) {
     var queryUrl = "https://rest.bandsintown.com/artists/" + artists + "/events?app_id=codingbootcamp"
     axios.get(queryUrl).then(function (response) {
         all_events = response.data
-        console.log(printGreen("Events:"))
+        console.log(chalk.printGreen("Events:"))
         for (var i = 0; i < all_events.length; i++) {
             var venue = all_events[i].venue.name + " "
             var location = all_events[i].venue.city + ", " + all_events[i].venue.country
@@ -113,21 +108,31 @@ function findVenue(artists) {
             console.log(logPrint)
         }
     })
+    
 }
 
 function readFromFile() {
-    var data = readFile('random.txt')
-    var file_inputs = data.split(",");
+    fs.readFile("random.txt", "utf8", function(err, data) {
+        if (err) {
+            return console.log(err);
+        }
+        var file_inputs = data.split(",");
+        var command = file_inputs[0]
+        var inputForFunction = file_inputs[1]
 
-    var command = file_inputs[0]
-    var inputForFunction = file_inputs[1]
-
-    console.log(command)
-    console.log(inputForFunction)
-
-
-    runACommand(command, inputForFunction)
-
+        if (command == 'spotify-this-song') {
+            findTrack(inputForFunction)
+        }
+        else if (command == 'movie-this') {
+            findMovie(inputForFunction)
+        }
+        else if (command == 'concert-this') {
+            findVenue(inputForFunction)
+        }
+        else {
+            console.log('ruh roh 2')
+        }
+    })
 
 
     // var command
@@ -169,10 +174,3 @@ function readFile(file) {
     }
 }
 
-function printCategory(key, value) {
-    return printRed(key + ":") + printYellow(" " + value) + "\n"
-}
-
-function printSubCategory(key, value) {
-    return printBlue("   " + key + ": ") + printYellow(" " + value) + "\n" 
-}
